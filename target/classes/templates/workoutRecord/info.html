@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            overflow-y: hidden; overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+        table{
+            border-collapse: collapse;
+            border: 1px solid;
+            border-color: #2222fc;
+        }
+        tr{
+            height: 100px;
+        }
+        img{
+            width: 1200px; height: 400px;
+        }
+        .btn{
+            cursor: pointer;
+        }
+        .th_head{
+            cursor: pointer;
+            width: 100px;
+            font-size: 25px;
+        }
+        #div_History{
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar{
+            height: 10px;
+            width: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #273afd;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: #6a6afd;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+    </style>
+</head>
+<body>
+<table border="1" >
+    <thead >
+    <tr>
+        <th class="th_head" onmouseenter="mouseEnterInfo(this)" style="width: 300px"
+            onmouseleave="mouseLeaveInfo(this)" onclick="clickNameMenu()">
+        <span style="font-size: 15px; position: absolute; right: 1230px; bottom: 678px"
+              th:if="${workoutInfo.getType()}==weight">타입:무게</span>
+            <span style="font-size: 15px; position: absolute; right: 1230px; bottom: 678px"
+                  th:if="${workoutInfo.getType()}==amount">타입:횟수</span>
+            <span th:text="${workoutInfo.getName()}"></span>
+        </th>
+        <th class="th_head" id="th_history" onmouseenter="mouseEnterInfo(this)"
+            onmouseleave="mouseLeaveInfo(this)" onclick="clickHistory()">히스토리</th>
+        <th class="th_head" onmouseenter="mouseEnterInfo(this)"
+            onmouseleave="mouseLeaveInfo(this)" onclick="clickExplainMenu()"><span>영상 보기</span></th>
+    </tr>
+    </thead>
+    <tr>
+        <td id="td_Body" rowspan="5" colspan="3" >
+            <div id="div_Img">
+            <img th:src="@{${workoutInfo.getImgURL()}}">
+            </div>
+            <div id="div_History"  style=" width:1200px; height: 500px; display: none;text-align: left">
+
+            </div>
+        </td>
+    </tr>
+    <tr></tr>
+    <tr></tr>
+    <tr></tr>
+    <tr></tr>
+    <tr>
+        <td id="td_Appendix" style="text-align: center">
+
+        </td>
+        <td class="btn" onmouseenter="mouseEnterInfo(this)" onmouseleave="mouseLeaveInfo(this)"
+            onclick="clickAddListMenu()" style="font-size: 25px;text-align: center">
+            <span>리스트 추가</span>
+        </td>
+        <td class="btn" onmouseenter="mouseEnterInfo(this)" onmouseleave="mouseLeaveInfo(this)"
+            onclick="clickBackMenu()" style="font-size: 25px; text-align: center">
+            <span>돌아가기</span>
+        </td>
+    </tr>
+</table>
+
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    var totalAndTarget=[[${totalAndTarget}]];
+    var jsonData=[[${arrJsonData}]]
+    var day=[[${arrDay}]]
+    var parseJsonData=[];
+    if(jsonData){
+        for(var i=0; i<jsonData.length;i++)
+            parseJsonData.push(JSON.parse(jsonData[i]))
+        for(var i=0; i<parseJsonData.length;i++){
+            $('#div_History').add("<div style='width: 1180px;background-color: rgb(232,243,255); " +
+                "border-bottom: 1px solid #2222fc;margin: 5px;box-shadow:5px 5px #e2e2e2 '>" +
+                "<div style='height: 20px;text-align: center; font-size: 25px'>" +
+                "<span>"+day[i][0]+day[i][1]+'-'+day[i][2]+day[i][3]+'기록'+"</span></div></div>").appendTo($('#div_History'));
+            for(var j=0; j<parseJsonData[i].amount.length;j++ ){
+                var number=j+1;
+                $('#div_History').children(":eq("+i+")")
+                    .add("<div style='display:inline-block; height: 100px; width: 90px; font-size:25px;margin: 20px'>" +
+                        "<div  style=''>"+number+'세트'+"</div><div>"+parseJsonData[i].weight[j]+'kg'+"</div>" +
+                        "<div>"+parseJsonData[i].amount[j]+'회'+"</div></div>")
+                    .appendTo($('#div_History').children(":eq("+i+")"));
+            }
+        }
+    }
+
+    var imgURL=[[${workoutInfo.getImgURL()}]];
+    var event=[[${workoutInfo.getEvent()}]];
+    var type=[[${workoutInfo.getType()}]];
+    var name=[[${workoutInfo.getName()}]];
+    var i=1;
+    var eventToKorean="";
+    if(event=="chest")
+        eventToKorean="가슴";
+    if(event=="back")
+        eventToKorean="등";
+    if(event=="shoulder")
+        eventToKorean="어깨";
+    if(event=="leg")
+        eventToKorean="하체";
+    if(event=="triceps")
+        eventToKorean="삼두";
+    if(event=="biceps")
+        eventToKorean="이두";
+    if(event=="abs")
+        eventToKorean="복근";
+    if(event=="body")
+        eventToKorean="전신";
+    var percent=(100/totalAndTarget[0])*totalAndTarget[1];
+    $('#td_Appendix').add("<div style='font-size: 35px'>"+totalAndTarget[1]+'세트 수행'+"</div>" +
+        "<div>"+eventToKorean+' 운동 '+totalAndTarget[0]+'세트'+ ' 중 '+percent.toFixed(0)+'%'+"</div>")
+        .appendTo($('#td_Appendix'))
+    function clickBackMenu() {
+        $('#div_workoutListMain').load("/workoutRecord/workoutListMain",{"event":event});
+    }
+    function clickAddListMenu() {
+        var arrJson=[];
+        $('#div_ListBox').add("<div class='div_List'>" +
+            " <img id='img_Thumbnail' src="+imgURL+">" +
+                "<span style='position: relative; bottom: 80px; left: 80px'>부위:</span>"+
+            "<span id='span_Event'>"+event+"</span>"+
+            "<span style='position: relative; bottom: 80px; left: 85px'>타입:</span>"+
+            "<span id='span_Type'>"+type+"</span>"+
+                "<div id='div_Name'>"+name+"</div>"+
+                "<div id='div_RemoveBox' onmouseleave='mouseLeaveListBox(this)' " +
+            "onmouseenter='mouseEnterListBox(this)' onclick='clickRemoveBox(this)'" +
+            "><span style=\"position: relative; top: 10px\">ㅡ</span></div>"+
+             "<input id='input_Amount' type='hidden' value="+arrJson+">"+
+            "<input id='input_Bool' type='hidden' value="+arrJson+">"+
+            "<input id='input_Weight' type='hidden' value="+arrJson+">"+
+            "</div>").appendTo($('#div_ListBox'))
+    }
+    function clickHistory() {
+        $('#div_History').css('display',"block");
+        $('#div_Img').css('display',"none");
+    }
+    function clickNameMenu() {
+        $('#div_Img').children('img').attr('src',imgURL);
+        $('#div_Img').css('display','block');
+        $('#div_History').css('display',"none");
+    }
+    function clickExplainMenu() {
+        var URL=$('#div_Img').children('img').attr('src');
+        var formatImgURL=URL.replace('jpg','gif');
+        $('#div_Img').children('img').attr('src',formatImgURL);
+        $('#div_Img').css('display','block');
+        $('#div_History').css('display',"none");
+    }
+    function mouseEnterInfo(curTd) {
+        $(curTd).css('background','#6b89f6');
+    }
+    function mouseLeaveInfo(curTd) {
+        $(curTd).css('background','white');
+    }
+</script>
+</body>
+</html>

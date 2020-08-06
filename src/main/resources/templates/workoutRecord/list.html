@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            overflow-y: hidden; overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+        #div_workoutListMain{
+            position: relative;
+            left: 250px; top: 30px;
+            width: 1300px; height: 700px;
+            text-align: center;
+            margin: 0px;
+        }
+        #nav_workoutListMenu{
+            position: fixed;
+            top: 200px;
+            background-color: #0953ef;
+            font-size: 25px; font-family: "Yu Gothic UI Light"; font-weight: 500;
+            text-align: center;
+            height: 480px; width: 200px;
+        }
+        #div_AddList{
+            position: relative;
+            left: 1600px; bottom: 700px;
+
+        }
+        .table_workOutListMenu{
+            width: 100%;
+            border: 1px solid #444444;
+            border-collapse: collapse;
+        }
+        .tr_workoutListMenu{
+            cursor: pointer;
+            height: 60px;
+            border: 1px solid #444444;
+        }
+    </style>
+    <script>
+        var prevTr="";
+    </script>
+</head>
+<span th:include="topBar.html" />
+<body id="workoutListBody">
+<nav id="nav_workoutListMenu">
+    <table class="table_workOutListMenu" >
+        <tr class="tr_workoutListMenu" id="chest"
+            onclick="menuClick(this)" onmouseenter="mouseEnterList(this)" onmouseleave="mouseLeaveList(this)">
+            <td>가 슴</td></tr>
+        <tr class="tr_workoutListMenu" id="back"
+            onclick="menuClick(this)" onmouseenter="mouseEnterList(this)" onmouseleave="mouseLeaveList(this)" >
+            <td> 등 </td></tr>
+        <tr class="tr_workoutListMenu" id="shoulder"
+            onclick="menuClick(this)" onmouseenter="mouseEnterList(this)" onmouseleave="mouseLeaveList(this)">
+            <td>어 깨</td></tr>
+        <tr class="tr_workoutListMenu" id="leg"
+            onclick="menuClick(this)" onmouseenter="mouseEnterList(this)" onmouseleave="mouseLeaveList(this)">
+            <td>하 체</td></tr>
+        <tr class="tr_workoutListMenu" id="triceps"
+            onclick="menuClick(this)" onmouseenter="mouseEnterList(this)" onmouseleave="mouseLeaveList(this)">
+            <td>삼 두</td></tr>
+        <tr class="tr_workoutListMenu" id="biceps"
+            onclick="menuClick(this)" onmouseenter="mouseEnterList(this)" onmouseleave="mouseLeaveList(this)">
+            <td>이 두</td></tr>
+        <tr class="tr_workoutListMenu" id="abs"
+            onclick="menuClick(this)" onmouseenter="mouseEnterList(this)" onmouseleave="mouseLeaveList(this)">
+            <td>복 근</td></tr>
+        <tr class="tr_workoutListMenu" id="body"
+            onclick="menuClick(this)" onmouseenter="mouseEnterList(this)" onmouseleave="mouseLeaveList(this)">
+            <td >전 신</td></tr>
+    </table>
+</nav>
+<div id="div_workoutListMain">
+</div>
+<div id="div_AddList">
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    var jsonData=[[${jsonData}]];
+    var year=[[${calVO.getYear()}]];
+    var month=[[${calVO.getMonth()}]];
+    var date=[[${date}]];
+
+    $('#div_AddList').load("/workoutRecord/addWorkoutList", {"jsonData":jsonData,
+        "year":year,"month":month,"date":date});
+
+    function menuClick(curTr) {
+        var curMenu=$(curTr).children('td').text();
+        var prevMenu=$(prevTr).children('td').text();
+
+        if(curMenu!=prevMenu){
+            $(prevTr).css('background','#0953ef');
+            $(curTr).css('background','#496ff3');
+            prevTr=curTr;
+        }
+        else if(curMenu==prevMenu){
+            return;
+        }
+        $('#div_workoutListMain').load("/workoutRecord/workoutListMain",{"event":curTr.id});
+    }
+    function mouseEnterList(curTr) {
+        $(curTr).css('background','#496ff3');
+    }
+    function mouseLeaveList(curTr) {
+        var curMenu=$(curTr).children('td').text();
+        var prevMenu=$(prevTr).children('td').text();
+        if(curMenu==prevMenu)
+            return;
+        $(curTr).css('background','#0953ef');
+    }
+</script>
+</body>
+<form>
+
+</form>
+</html>

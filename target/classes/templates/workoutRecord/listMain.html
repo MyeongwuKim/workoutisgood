@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            overflow-y: hidden; overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+        img{
+            width: 430px; height: 200px;
+            position: relative;/*bottom:200px;*/
+        }
+        .table_workoutListMain{
+            width: 1300px;
+            border: 1px solid #444444;
+            border-collapse: collapse;
+        }
+        .tr_workoutListMain{
+            height: 240px;
+            border: 1px solid #444444;
+        }
+        .td_workoutListMain{
+            width: 430px;
+            cursor: pointer;
+        }
+        .weight{
+            position: relative; bottom: 4px;
+            font-size: 25px;
+        }
+        .amount{
+            position: relative; bottom: 4px;
+            font-size: 25px;
+        }
+    </style>
+</head>
+<body>
+<table border="3" id="table_workoutListMain" class="table_workoutListMain">
+<tr class="tr_workoutListMain">
+    <td  class="td_workoutListMain" onmouseenter="mouseEnterMain(this)"
+        onmouseleave="mouseLeaveMain(this)" onclick="workoutListClick(this)" >
+        <img th:src="@{'/img/'+${event}+'/1.jpg'}" >
+        <span class="weight" th:if="${event}=='chest'" >바벨 벤치프레스</span>
+        <span class="amount" th:if="${event}=='back'">풀업</span>
+        <span class="weight" th:if="${event}=='shoulder'">덤벨 프레스</span>
+        <span class="weight" th:if="${event}=='leg'">스쿼트</span>
+        <span class="weight" th:if="${event}=='triceps'">트라이셉트 푸쉬다운</span>
+        <span class="weight" th:if="${event}=='biceps'">바벨컬</span>
+        <span class="amount" th:if="${event}=='abs'">레그 레이즈</span>
+        <span class="amount" th:if="${event}=='body'">버피 테스트</span>
+    </td>
+    <td class="td_workoutListMain" onmouseenter="mouseEnterMain(this)"
+        onmouseleave="mouseLeaveMain(this)" onclick="workoutListClick(this)">
+        <img th:src="@{'/img/'+${event}+'/2.jpg'}">
+        <span class="weight" th:if="${event}=='chest'">인클라인 바벨벤치프레스</span>
+        <span class="weight" th:if="${event}=='back'">바벨 로우</span>
+        <span class="weight" th:if="${event}=='shoulder'">바벨 프레스</span>
+        <span class="weight" th:if="${event}=='leg'">바벨 런지</span>
+        <span class="weight" th:if="${event}=='triceps'">(누워서)트라이셉트 익스텐션</span>
+        <span class="weight" th:if="${event}=='biceps'">덤벨컬</span>
+        <span class="amount" th:if="${event}=='abs'">크런치</span>
+        <span class="weight" th:if="${event}=='body'">케틀벨 스윙</span>
+    </td>
+    <td class="td_workoutListMain" onmouseenter="mouseEnterMain(this)"
+        onmouseleave="mouseLeaveMain(this)" onclick="workoutListClick(this)">
+        <img th:src="@{'/img/'+${event}+'/3.jpg'}">
+        <span class="weight" th:if="${event}=='chest'">덤벨 벤치프레스</span>
+        <span class="weight" th:if="${event}=='back'">랫플 다운:오버그립</span>
+        <span class="weight" th:if="${event}=='shoulder'">레터럴 레이즈</span>
+        <span class="weight" th:if="${event}=='leg'">레그 익스텐션</span>
+        <span class="weight" th:if="${event}=='triceps'">(앉아서)덤벨 트라이셉트 익스텐션</span>
+        <span class="weight" th:if="${event}=='biceps'">이지바 컬</span>
+        <span class="weight" th:if="${event}=='abs'">케이블 크런치</span>
+        <span class="weight" th:if="${event}=='body'">덤벨 쓰러스터</span>
+    </td>
+</tr>
+<tr class="tr_workoutListMain">
+    <td class="td_workoutListMain" onmouseenter="mouseEnterMain(this)"
+        onmouseleave="mouseLeaveMain(this)" onclick="workoutListClick(this)">
+        <img th:unless="${event}==body" th:src="@{'/img/'+${event}+'/4.jpg'}">
+        <span class="weight" th:if="${event}=='chest'">인클라인 덤벨 벤치프레스</span>
+        <span class="weight" th:if="${event}=='back'">머신 로우</span>
+        <span class="weight" th:if="${event}=='shoulder'">바벨 프론트 레이즈</span>
+        <span class="weight" th:if="${event}=='leg'">레그 컬</span>
+        <span class="weight" th:if="${event}=='triceps'">(서서)원핸드 덤벨 트라이셉트 익스텐션</span>
+        <span class="weight" th:if="${event}=='biceps'">(번갈아가며)해머 컬</span>
+        <span class="amount" th:if="${event}=='abs'">플랭크</span>
+    </td>
+    <td class="td_workoutListMain" onmouseenter="mouseEnterMain(this)"
+        onmouseleave="mouseLeaveMain(this)" onclick="workoutListClick(this)">
+        <img th:unless="${event}==body" th:src="@{'/img/'+${event}+'/5.jpg'}">
+        <span class="amount" th:if="${event}=='chest'">딥스</span>
+        <span class="weight" th:if="${event}=='back'">원암 덤벨 로우</span>
+        <span class="weight" th:if="${event}=='shoulder'">머신 백 플라이</span>
+        <span class="weight" th:if="${event}=='leg'">레그 프레스</span>
+        <span class="weight" th:if="${event}=='triceps'">트라이셉트 푸쉬다운:케이블</span>
+        <span class="weight" th:if="${event}=='biceps'">인클라인 덤벨 컬</span>
+        <span class="amount" th:if="${event}=='abs'">행잉 레그 레이즈</span>
+    </td>
+    <td class="td_workoutListMain" onmouseenter="mouseEnterMain(this)"
+        onmouseleave="mouseLeaveMain(this)" onclick="workoutListClick(this)">
+        <img th:unless="${event}==body" th:src="@{'/img/'+${event}+'/6.jpg'}">
+        <span class="weight" th:if="${event}=='chest'">체스트 플라이</span>
+        <span class="weight" th:if="${event}=='back'">루마니안 데드리프트</span>
+        <span class="weight" th:if="${event}=='shoulder'">머신 숄더 프레스</span>
+        <span class="weight" th:if="${event}=='leg'">핵 스쿼트</span>
+        <span class="weight" th:if="${event}=='triceps'">덤벨 킥백</span>
+        <span class="weight" th:if="${event}=='biceps'">케이블 컬</span>
+        <span class="amount" th:if="${event}=='abs'">바이크 크런치</span>
+    </td>
+</tr>
+<tr class="tr_workoutListMain">
+    <td class="td_workoutListMain" onmouseenter="mouseEnterMain(this)"
+        onmouseleave="mouseLeaveMain(this)" onclick="workoutListClick(this)">
+        <img th:unless="${event}==body" th:src="@{'/img/'+${event}+'/7.jpg'}">
+        <span class="weight" th:if="${event}=='chest'">케이블 크로스 오버</span>
+        <span class="weight" th:if="${event}=='back'">랫플다운:언더그립</span>
+        <span class="weight" th:if="${event}=='shoulder'">비하인드 넥 프레스</span>
+        <span class="weight" th:if="${event}=='leg'">스모 데드리프트</span>
+        <span class="weight" th:if="${event}=='triceps'">클로즈 그립 벤치프레스</span>
+        <span class="weight" th:if="${event}=='biceps'">케이블 해머 컬</span>
+        <span class="amount" th:if="${event}=='abs'">인클라인 레그레이즈</span>
+    </td>
+    <td class="td_workoutListMain" onmouseenter="mouseEnterMain(this)"
+        onmouseleave="mouseLeaveMain(this)" onclick="workoutListClick(this)">
+        <img th:unless="${event}==body" th:src="@{'/img/'+${event}+'/8.jpg'}">
+        <span class="weight" th:if="${event}=='chest'">스미스머신 벤치프레스</span>
+        <span class="weight" th:if="${event}=='back'">랫플다운:패러렐그립</span>
+        <span class="weight" th:if="${event}=='shoulder'">벤트오버 레터럴 레이즈</span>
+        <span class="weight" th:if="${event}=='leg'">컨벤셔널 데드리프트</span>
+        <span class="weight" th:if="${event}=='triceps'">(앉아서)바벨 트라이셉트 익스텐션</span>
+        <span class="weight" th:if="${event}=='biceps'">오버헤드 컬</span>
+        <span class="amount" th:if="${event}=='abs'">캡틴스 체어</span>
+    </td>
+    <td class="td_workoutListMain" onmouseenter="mouseEnterMain(this)"
+        onmouseleave="mouseLeaveMain(this)" onclick="workoutListClick(this)">
+        <img th:unless="${event}==body"  th:src="@{'/img/'+${event}+'/9.jpg'}">
+        <span class="weight" th:if="${event}=='chest'">인클라인 스미스머신 벤치프레스</span>
+        <span class="weight" th:if="${event}=='back'">티바 로우</span>
+        <span class="weight" th:if="${event}=='shoulder'">바벨 업라이트 로우</span>
+        <span class="weight" th:if="${event}=='leg'">스플릿 스쿼트</span>
+        <span class="weight" th:if="${event}=='triceps'">트라이셉트 푸쉬다운:리버스</span>
+        <span class="weight" th:if="${event}=='biceps'">머신 컬</span>
+        <span class="amount" th:if="${event}=='abs'">러시안 트위스트</span>
+    </td>
+</tr>
+</table>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+
+    function workoutListClick(curTd) {
+        var name=$(curTd).children('span').text()
+        var imgURL=$(curTd).children('img').attr('src');
+        var type=$(curTd).children('span').attr('class');
+        var event=[[${event}]];
+        $('#div_workoutListMain').load("/workoutRecord/workoutInfo",
+            {"type":type,"name":name,"imgURL":imgURL,"event":event})
+    }
+    function mouseEnterMain(curTd) {
+        if($(curTd).children('img').length<1)
+            return;
+        $(curTd).css('background','#6b89f6');
+    }
+    function mouseLeaveMain(curTd) {
+        $(curTd).css('background','white');
+    }
+</script>
+</body>
+</html>

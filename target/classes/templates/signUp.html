@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <style>
+        body {
+            overflow-y: hidden; overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+        #div_signUpBox{
+            position: relative; left: 650px; top: 150px;
+            height: 400px;width: 600px;
+            box-shadow: 5px 5px #93b4ff;
+            background-color: #00a9ff;
+        }
+    </style>
+</head>
+<span th:include="topBar.html"></span>
+<body>
+<div id="div_signUpBox">
+    <div style="font-size: 25px; position: relative; left: 140px; top: 80px">
+        <span>ID:</span>
+        <input id="input_Id" onblur="checkLength(this)" maxlength="10" type="text" style="font-size: 20px; height: 30px; width: 250px;"
+                placeholder="최소4글자 최대10글자"  >
+        <span id="span_AlertId" style="color: red;font-size: 13px; font-weight: 900; display: none">4글자이상 이여야합니다!</span>
+        <span id="span_OverlapId" style="color: red;font-size: 13px; font-weight: 900; display: none">중복된 아이디 입니다!</span>
+    </div>
+    <div style="font-size: 25px; position: relative; left: 127px; top: 110px">
+        <span>PW:</span>
+        <input id="input_Password"  onblur="checkLength(this)" maxlength="4" type="password" style="font-size: 20px; height: 30px; width: 250px;"
+               placeholder="4글자 입력">
+        <span id="span_AlertPW" style="color: red;font-size: 13px; font-weight: 900; display: none">4글자여야 합니다</span>
+    </div>
+    <div style="font-size: 25px; position: relative; left: 40px; top: 140px">
+        <span>PW CHECK:</span>
+        <input id="input_PasswordCheck" onblur="checkLength(this)" maxlength="4" type="password" style="font-size: 20px; height: 30px; width: 250px;"
+               placeholder="4글자 입력">
+        <span id="span_AlertPWCheck" style="color: red;font-size: 13px; font-weight: 900; display: none">패스워드가 틀립니다!</span>
+    </div>
+    <button onclick="clickConfirmBtn()" style="position:relative; top: 160px; left: 340px; width: 100px;height: 40px;cursor: pointer">확인</button>
+    <span onclick="javascript:document.location.href='/'"
+          style="position:relative; top: 240px;right: 100px;  width: 100px;height: 40px; color: white; font-size:25px;cursor: pointer">돌아가기</span>
+</div>
+</body>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    var arrId=[[${arrId}]];
+
+    function checkLength(obj) {
+        if($(obj).attr('id')=="input_Id"){
+            if($(obj).val().length<4) {
+                $('#span_AlertId').css('display','inline');
+            }
+            else
+                $('#span_AlertId').css('display','none');
+
+            for(var i=0; i<arrId.length;i++){
+                if($(obj).val()==arrId[i])
+                    $('#span_OverlapId').css('display','inline');
+                else
+                    $('#span_OverlapId').css('display','none');
+            }
+        }
+        else if($(obj).attr('id')=="input_Password"){
+            if($(obj).val().length<4) {
+                $('#span_AlertPW').css('display','inline');
+            }
+            else
+                $('#span_AlertPW').css('display','none');
+        }
+        else if($(obj).attr('id')=="input_PasswordCheck"){
+            if($(obj).val()!==$('#input_Password').val()){
+                $('#span_AlertPWCheck').css('display','inline');
+            }
+            else
+                $('#span_AlertPWCheck').css('display','none');
+        }
+    }
+    function clickConfirmBtn() {
+        var id=$('#input_Id').val();
+        var blank_pattern = /\s/g;
+        if(id.match(blank_pattern)){
+            alert("id는 공백이 들어갈 수 없습니다!")
+            return;
+        }
+    for(var i=0; i<arrId.length; i++) {
+        if ($('#input_Id').val().length < 4 || $('#input_Password').val().length < 4 ||
+            $('#input_PasswordCheck').val().length < 4 || id == arrId[i]) {
+            alert("입력된 정보를 확인 하세요!")
+            return;
+        }
+    }
+
+        $('input[name=id]').val($('#input_Id').val());
+        $('input[name=password]').val($('#input_Password').val());
+        document.infoSubmitForm.submit();
+    }
+</script>
+<form name="infoSubmitForm" action="/infoSubmit" method="post">
+    <input type="hidden" name="id">
+    <input type="hidden" name="password">
+</form>
+</html>

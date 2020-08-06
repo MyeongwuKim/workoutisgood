@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            overflow-y: hidden; overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+        a:link { color: black; text-decoration: none;}
+        a:visited { color: black; text-decoration: none;}
+        a:hover { color: blue;}
+        #titleBG{
+            background-color: #93b4ff;
+            margin: 0px;
+        }
+        #title{
+            font-size: 50px; font-family: "Yu Gothic";
+            margin-bottom: 20px; margin-top: 0px;
+        }
+        #mainMenu{
+            background-color: lavender;
+            font-size: 30px; font-family: "Yu Gothic"; font-weight:600;
+
+        }
+        .login{
+            height:25px;width: 120px;
+            float: right;
+        }
+    </style>
+    <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    </script>
+</head>
+<body>
+<div id="titleBG">
+<span id="title" >Workout is Good!</span>
+<!--<span style="height: 64px">
+    <button class="login" type="button"
+            style="height: 30px;width: 60px; position: relative; top: 40px; right: 15px">확인</button>
+    <input class="login" name="password" type="password"
+           style="height:25px; width:120px; position: relative; top: 40px; right: 20px"/>
+    <span class="login" style="height: 0px; position: relative; top: 15px; left: 100px">비밀번호:</span>
+    <input class="login" name="id" type="text"
+           style="height:25px; width:120px; position: relative; top: 40px; right: 30px"/>
+    <span class="login" style="height: 0px; position: relative; top: 15px; left: 90px">아이디:</span>
+</span>-->
+</div>
+
+<div id="mainMenu">
+  <!--  <a href="/" style="position: relative; left: 350px">처음 으로</a>-->
+    <a href="#" onclick="javascript:document.recordForm.submit()" style="position: relative; left: 550px">운동 기록</a>
+<!--    <a style="position: relative; left: 750px">게시판</a>
+    <a style="position: relative; left: 950px">나만의 마트</a>-->
+</div>
+<form name="recordForm" action="/workoutRecord/schedule"  method="post"></form>
+</body>
+<script>
+</script>
+</html>

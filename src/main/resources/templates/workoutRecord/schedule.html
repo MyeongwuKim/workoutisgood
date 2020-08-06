@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+        table{
+            border-collapse: collapse;
+            border: 1px solid;
+            border-color: #2222fc;
+        }
+        .th_Cal{
+            width: 160px; height: 20px;
+        }
+        .td_Cal{
+            height: 130px; width: 160px;
+            cursor: pointer;
+        }
+        .td_calDate{
+            position:relative; bottom: 0px;
+            display: block;
+        }
+        .div_SetRecord{
+            overflow: hidden;
+            color: #00a9ff;
+            width: 110px;height: 80px;
+            position:relative; left:25px; bottom: 0px;
+            text-align: center; font-size: 20px;
+        }
+        .div_Ellipsis{
+            font-size: 20px; text-align: center;
+            height: 27px; width: 157px;
+        }
+        .pageBtn:link { color: black; text-decoration: none;}
+        .pageBtn:visited { color: black; text-decoration: none;}
+        .pageBtn:hover { color: red;}
+        .pageBtn{
+            cursor: pointer;
+            text-align: center;
+        }
+        .td_workoutList{
+            display: block;
+            height: 100px; width:318px;
+            max-height: 100px;
+        }
+        #tbody_workoutList{
+            width: 320px; height: 700px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        #tbody_noList{
+            width: 320px; height: 700px;
+        }
+
+        ::-webkit-scrollbar{
+            height: 10px;
+            width: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #273afd;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: #6a6afd;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+    </style>
+    <form name="homeForm" action="/" method="get"></form>
+    <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <script th:inline="javascript">
+        var id=[[${id}]];
+        if(!id) {
+            alert("로그인후 이용해주세요!")
+            document.homeForm.submit();
+        }
+        var prevTd="";
+    </script>
+</head>
+<span th:include="topBar.html" />
+<body id="scheduleBody">
+<div style="height: 200px; width: 300px; background-color: #00a9ff; position: relative; top: 20px;
+box-shadow: 5px 5px #93b4ff;">
+    <div style="text-align: center">
+    <span style="font-size: 30px; position: relative; top: 20px; ">환영합니다!!<br></span>
+    <span style="font-size: 25px;  position: relative; top: 20px;" th:text="${id}+님">mw1992님</span>
+    </div>
+    <span onclick="clickLogOut()" style="font-size: 20px;color: white; cursor: pointer; position: relative; top: 90px;">로그 아웃</span>
+</div>
+<table border="1" style="width:1120px; background-color:white; position: relative;left: 340px;bottom:180px">
+   <colgroup>
+       <col><col><col><col><col><col><col>
+   </colgroup>
+    <tr>
+        <td class="pageBtn" id="leftBtn" onclick="pageBtnClick(this)" style="height: 25px">
+            <a> << </a>
+        </td>
+        <td colspan="5" style="height: 25px;text-align: center" >
+            <span th:text="${calVO.getYear()}+년">2020년</span>
+            <span th:text="${calVO.getMonth()+1}+월">6월</span>
+        </td>
+        <td class="pageBtn" id="rightBtn" onclick="pageBtnClick(this)" style="height: 25px">
+            <a> >> </a>
+        </td>
+    </tr>
+    <th class="th_Cal" style="color: red">일</th>
+    <th class="th_Cal">월</th>
+    <th class="th_Cal">화</th>
+    <th class="th_Cal">수</th>
+    <th class="th_Cal">목</th>
+    <th class="th_Cal">금</th>
+    <th class="th_Cal">토</th>
+    <tbody id="calBody" >
+    <tr th:each="list, i: ${cal_list}" >
+        <td class="td_Cal" onclick="dateClick(this)">
+            <span class="td_calDate" style="color: red" th:text="${list.getSunday()}"></span>
+            <div class='div_SetRecord'></div>
+            <div class="div_Ellipsis">
+                <span style="display: none">...</span>
+            </div>
+            <input type="hidden" class="input_JsonData">
+        </td>
+        <td class="td_Cal" onclick="dateClick(this)">
+            <span class="td_calDate" th:text="${list.getMonday()}"></span>
+            <div class='div_SetRecord'></div>
+            <div class="div_Ellipsis">
+                <span>...</span>
+            </div>
+            <input type="hidden" class="input_JsonData">
+        </td>
+        <td class="td_Cal" onclick="dateClick(this)">
+            <span class="td_calDate" th:text="${list.getTuesday()}"></span>
+
+            <div class='div_SetRecord'></div>
+            <div class="div_Ellipsis">
+                <span>...</span>
+            </div>
+            <input type="hidden" class="input_JsonData">
+        </td>
+        <td class="td_Cal" onclick="dateClick(this)">
+            <span class="td_calDate" th:text="${list.getWednesday()}"></span>
+
+            <div class='div_SetRecord'></div>
+            <div class="div_Ellipsis" >
+                <span>...</span>
+            </div>
+            <input type="hidden" class="input_JsonData">
+        </td>
+        <td class="td_Cal" onclick="dateClick(this)">
+            <span class="td_calDate" th:text="${list.getThursday()}">1</span>
+
+            <div class='div_SetRecord'></div>
+            <div class="div_Ellipsis">
+                <span>...</span>
+            </div>
+            <input type="hidden" class="input_JsonData">
+        </td>
+        <td class="td_Cal" onclick="dateClick(this)">
+            <span class="td_calDate" th:text="${list.getFriday()}"></span>
+
+            <div class='div_SetRecord'></div>
+            <div class="div_Ellipsis">
+                <span>...</span>
+            </div>
+            <input type="hidden" class="input_JsonData">
+        </td>
+        <td class="td_Cal" onclick="dateClick(this)">
+            <span class="td_calDate" th:text="${list.getSaturday()}"></span>
+
+            <div class='div_SetRecord'></div>
+            <div class="div_Ellipsis">
+                <span>...</span>
+            </div>
+            <input type="hidden" class="input_JsonData">
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table border="1" id="table_workoutList" style="width: 320px; height: 734px; display: none;
+background-color:#ffffff; position: absolute;left: 1590px;bottom: 60px; ">
+    <th style="height: 30px;width: 320px">
+        <span th:text="${calVO.getYear()}+년"></span>
+        <span th:text="${calVO.getMonth()+1}+월"></span>
+        <span id="th_Date"></span>
+    </th>
+    <tbody id="tbody_workoutList"  style="display: none;cursor: pointer"
+           onmouseenter="mouseEnter(this)" onmouseleave="mouseLeave(this)" onclick="clickTableBody()">
+    <tr>
+        <td style="height: 80px; text-align: center; font-size: 20px">진행상황 보기</td>
+    </tr>
+    </tbody>
+    <tbody id="tbody_noList"  style="cursor: pointer"
+           onclick="clickTableBody()" onmouseenter="mouseEnter(this)" onmouseleave="mouseLeave(this)">
+    <tr>
+        <td style="height: 700px;width: 320px " rowspan="8">
+            <span style="font-size: 25px">
+                등록된 기록이 없습니다!
+                <br>
+                기록을 원한다면 클릭!
+            </span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    var jsonData=[[${arrJsonData}]];
+
+    let today = new Date();
+    let year = today.getFullYear(); // 년도
+    let month = today.getMonth() + 1;  // 월
+    let date = today.getDate();  // 날짜
+
+    var currentYear=[[${calVO.getYear()}]];
+    var currentMonth=[[${calVO.getMonth()}]]
+
+    for(var i=0; i<$('#calBody').children().children().length;i++){
+        if(year==currentYear && month==currentMonth+1 &&
+            $('#calBody').children().children(":eq("+i+")").children(".td_calDate").text()==date){
+            $('#calBody').children().children(":eq("+i+")").children(".td_calDate").add("<span class='td_today' style='position: relative;left: 50px'>오늘</span>")
+            .appendTo( $('#calBody').children().children(":eq("+i+")").children(".td_calDate"));
+        }
+    }
+if(jsonData) {
+    var parseJsonData = [];
+    for (var i = 0; i < jsonData.length; i++) {
+        parseJsonData.push(JSON.parse(jsonData[i]));
+    }
+    for (var i = 0; i < parseJsonData.length; i++) {
+        var legAmount = 0, chestAmount = 0, shoulderAmount = 0, bodyAmount = 0, absAmount = 0, bicepsAmount = 0, tricepsAmount = 0;
+        for (var j = 0; j < parseJsonData[i].length; j++) {
+            for (var k = 0; k < $('#calBody').children().children().length; k++) {
+                var curDate=$('#calBody').children().children(":eq(" + k + ")").children(".td_calDate").text().replace("오늘","");
+                    if (parseJsonData[i][j].date ==curDate) {
+                    if (parseJsonData[i][j].event == "leg") {
+                        legAmount += parseJsonData[i][j].bool.length;
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").children('.leg').remove();
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").add("<span class='leg'>"+ "하체"+legAmount+"세트"
+                            +"</span>").appendTo($('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord"));
+                    }
+                    if (parseJsonData[i][j].event == "chest") {
+                        chestAmount +=  parseJsonData[i][j].bool.length;
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").children('.chest').remove();
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").add("<span class='chest'>"+ "가슴"+chestAmount+"세트"
+                            +"</span>").appendTo($('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord"));
+                    }
+                    if (parseJsonData[i][j].event == "shoulder") {
+                        shoulderAmount +=  parseJsonData[i][j].bool.length;
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").children('.shoulder').remove();
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").add("<span class='shoulder'>"+ "어깨"+shoulderAmount+"세트"
+                            +"</span>").appendTo($('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord"));
+                    }
+                    if (parseJsonData[i][j].event == "biceps") {
+                        bicepsAmount +=  parseJsonData[i][j].bool.length;
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").children('.biceps').remove();
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").add("<span class='biceps'>"+ "이두"+bicepsAmount+"세트"
+                            +"</span>").appendTo($('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord"));
+                    }
+                    if (parseJsonData[i][j].event == "triceps") {
+                        tricepsAmount +=  parseJsonData[i][j].bool.length;
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").children('.triceps').remove();
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").add("<span class='triceps'>"+ "삼두"+tricepsAmount+"세트"
+                            +"</span>").appendTo($('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord"));
+                    }
+                    if (parseJsonData[i][j].event == "abs") {
+                        absAmount += parseJsonData[i][j].bool.length;
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").children('.abs').remove();
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").add("<span class='abs'>"+ "복근"+absAmount+"세트"
+                            +"</span>").appendTo($('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord"));
+                    }
+                    if (parseJsonData[i][j].event == 'body') {
+                        bodyAmount +=  parseJsonData[i][j].bool.length;
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").children('.body').remove();
+                        $('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").add("<span class='body'>"+"전신"+bodyAmount+"세트"
+                            +"</span>").appendTo($('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord"));
+                    }
+                }
+            }
+        }
+        for (var k = 0; k < $('#calBody').children().children().length; k++) {
+            if (parseJsonData[i][0].date ==
+                $('#calBody').children().children(":eq(" + k + ")").children(".td_calDate").text()) {
+                $('#calBody').children().children(":eq(" + k + ")").children(".input_JsonData").val(JSON.stringify(parseJsonData[i]));
+                $('#calBody').children().children(":eq(" + k + ")").children(".input_JsonData").val();
+            }
+        }
+    }
+}
+
+    for (var k = 0; k < $('#calBody').children().children().length; k++) {
+        if ($('#calBody').children().children(":eq(" + k + ")").children(".div_SetRecord").children().length >= 3) {
+            $('#calBody').children().children(":eq(" + k + ")").children(".div_Ellipsis").children().css('display','inline');
+        }
+        else
+            $('#calBody').children().children(":eq(" + k + ")").children(".div_Ellipsis").children().css('display','none');
+    }
+    var dateForList;
+    function clickTableBody() {
+        if(year!=currentYear || month!=currentMonth+1 || date!=dateForList ){
+            if(confirm("오늘 날짜가 아닙니다. 기록 하시겠습니까?")) {
+                document.listForm.submit();
+            }
+            else
+                return;
+        }
+        if($('#jsonDataForProgress').val()){
+            $('#yearForProgress').val(currentYear);
+            $('#monthForProgress').val(currentMonth);
+            $('#dateForProgress').val(dateForList);
+            document.progressForm.submit();
+        }
+        else {
+            $('#yearForList').val(currentYear);
+            $('#monthForList').val(currentMonth);
+            $('#dateForList').val(dateForList);
+            document.listForm.submit();
+        }
+    }
+    function clickLogOut() {
+        document.location.href="/logOut";
+    }
+    function mouseEnter(obj) {
+        $(obj).css('backgroundColor','#cbcbcb');
+    }
+    function mouseLeave(obj) {
+        $(obj).css('backgroundColor','white');
+    }
+    function dateClick(curTd) {
+        var curDate=$(curTd).children('.td_calDate').text().replace("오늘","");
+        var prevDate=$(prevTd).children('.td_calDate').text();
+        dateForList=curDate;
+
+        if(curDate==" "){
+            return;
+        }
+        if(curDate!=prevDate){
+            $(prevTd).children('.td_calDate').css('backgroundColor','white');
+            $(prevTd).children('.td_calDate').css('color','black');
+            $(curTd).children('.td_calDate').css('backgroundColor','blue');
+            $(curTd).children('.td_calDate').css('color','white');
+            $('#th_Date').text(curDate+"일 기록");
+            $('#table_workoutList').css('display','table');
+            prevTd=curTd;
+            if($(curTd).children('.input_JsonData').val()){
+                $('#table_workoutList').children('#tbody_workoutList').css("display","block");
+                $('#table_workoutList').children('#tbody_noList').css("display","none");
+                if($('#table_workoutList').children('#tbody_workoutList').children('.tr_workoutList').length>0) {
+                    $('#table_workoutList').children('#tbody_workoutList').children('.tr_workoutList').remove();
+                }
+                var myJson=JSON.parse($(curTd).children('.input_JsonData').val());
+                for(var i=0; i<myJson.length;i++){
+                    var trueAmount=0 ,strComplete="진행중"
+                    for(var j=0; j<myJson[i].bool.length;j++){
+                        if(myJson[i].bool[j]==1)
+                            trueAmount+=1;
+                        if(trueAmount==myJson[i].bool.length)
+                            strComplete="완료";
+                    }
+                    $('#table_workoutList').children('#tbody_workoutList').add("<tr class='tr_workoutList'><td class='td_workoutList'>" +
+                        "<img style='height: 99px;width: 100px; display: inline-block' src="+myJson[i].imgURL+">" +
+                        " <div style='font-size: 20px;height:40px;width: 200px;position: relative; bottom: 100px;left:100px'>" +
+                        "<span>"+myJson[i].name+"</span></div>" +
+                        "<div style='height: 20px;width:200px;font-size: 20px;position: relative; bottom: 80px; left:100px'>" +
+                        "<span>"+'('+trueAmount +'/'+myJson[i].bool.length+')'+strComplete+"</span></div>" +
+                        "</td></tr>").appendTo($('#table_workoutList').children('#tbody_workoutList'));
+                }
+                $('#jsonDataForProgress').val($(curTd).children('.input_JsonData').val());
+            }
+            else{
+                $('#table_workoutList').children('#tbody_workoutList').css("display","none");
+                $('#table_workoutList').children('#tbody_noList').css("display","block");
+                $('#jsonDataForProgress').val("");
+            }
+        }
+        else if(curDate==prevDate){
+            $(prevTd).children('.td_calDate').css('backgroundColor','white');
+            $(prevTd).children('.td_calDate').css('color','black');
+            $('#table_workoutList').css('display','none');
+            prevTd="";
+        }
+    }
+    function pageBtnClick(a) {
+        var currentYear=[[${calVO.getYear()}]];
+        var currentMonth=[[${calVO.getMonth()}]];
+        var Input_Year=document.getElementById('year');
+        var Input_Month=document.getElementById('month');
+        var m;
+        if(a.id==="leftBtn"){
+            m=currentMonth-1;
+            if(m<0){
+                Input_Month.value=11;
+                Input_Year.value=currentYear-1;
+            }
+            else{
+                Input_Month.value=m;
+                Input_Year.value=currentYear;
+            }
+        }
+        else if(a.id==="rightBtn"){
+            m=currentMonth+1;
+            if(m>11){
+                Input_Month.value=0;
+                Input_Year.value=currentYear+1;
+            }
+            else{
+                Input_Month.value=m;
+                Input_Year.value=currentYear;
+            }
+        }
+        document.scheduleForm.submit();
+    }
+</script>
+<form name="scheduleForm" action="/workoutRecord/schedule" method="post">
+    <input name="year" id="year" type="hidden">
+    <input name="month" id="month" type="hidden">
+</form>
+<form name="progressForm" action="/workoutRecord/workoutProgress" method="post">
+    <input name="jsonData" id="jsonDataForProgress" type="hidden">
+    <input name="year" id="yearForProgress" type="hidden">
+    <input name="date" id="dateForProgress" type="hidden">
+    <input name="month" id="monthForProgress" type="hidden">
+</form>
+<form name="listForm" action="/workoutRecord/myWorkout" method="post">
+    <input name="event" id="event" type="hidden" value="chest">
+    <input name="year" id="yearForList" type="hidden">
+    <input name="date" id="dateForList" type="hidden">
+    <input name="month" id="monthForList" type="hidden">
+</form>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome!</title>
+    <style>
+        body {
+            overflow-y: hidden; overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+        .div_LoginBox{
+            position: relative; left: 650px; top: 150px;
+            height: 300px;width: 600px;
+            box-shadow: 5px 5px #93b4ff;
+            background-color: #00a9ff;
+        }
+    </style>
+</head >
+<span th:include="topBar.html" />
+<body>
+<div class="div_LoginBox" th:if="!${id}">
+    <div  style="font-size: 25px; position: relative; left: 140px; top: 50px">
+        <span>ID:</span>
+        <input onblur="checkLength(this)" id="input_Id" type="text" style="font-size: 20px; height: 30px; width: 250px;"
+               placeholder="최소4글자 최대10글자"  >
+        <span id="div_AlertId" style="display:none;color: red;font-size: 13px; font-weight: 900;
+        position: relative; bottom: 10px">
+            <span>공백이 있거나 </span>
+            <span style="position: relative; top: 20px;right: 87px">4글자 미만입니다</span>
+        </span>
+    </div>
+    <div style="font-size: 25px; position: relative; left: 127px; top: 100px">
+        <span>PW:</span>
+       <input maxlength="4" onblur="checkLength(this)" id="input_Password" type="password" style="font-size: 20px; height: 30px; width: 250px;"
+              placeholder="4글자 입력">
+        <span id="span_AlertPW" style="color: red;font-size: 13px; font-weight: 900; display: none">4글자여야 합니다</span>
+    </div>
+    <button onclick="clickLogin()" style="position:relative; top: 120px; left: 440px; width: 100px;height: 40px;cursor: pointer";>로그인</button>
+    <span style="position:relative; top:  120px; left: 40px" >계정이 없다면 간단하게
+        <span style="color: white; cursor: pointer" onclick="javascript:document.signUpForm.submit()">만들어보세요</span>
+    </span>
+</div>
+
+<div class="div_LoginBox" th:if="${id!=null} ">
+    <div  style="font-size: 25px; position: relative;  top: 80px;text-align: center">
+        <span style="font-size: 25px;color: red">로그인 </span>
+        <span style="font-size: 25px;">상태 입니다!<br></span>
+        <span style="position: relative; top: 20px">로그인계정 </span>
+        <span  style="position: relative; top: 20px" th:text="${id}">mw1992</span>
+        <div onclick="clickLogOut()" style="position: relative; top: 100px; cursor: pointer; color:white">
+            로그아웃
+        </div>
+    </div>
+</div>
+
+<form name="signUpForm" action="/signUp" method="get"></form>
+<form name="loginCheckForm" action="/loginCheck" method="post">
+    <input name="id" type="hidden">
+    <input name="password" type="hidden">
+</form>
+</body>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    console.log([[${id}]]);
+    function clickLogOut() {
+        if(confirm("로그아웃 하시겠습니까?")){
+            document.logOutForm.submit();
+        }
+        else
+            return;
+    }
+    function clickLogin() {
+        $('input[name=id]').val($('#input_Id').val());
+        $('input[name=password]').val($('#input_Password').val());
+        document.loginCheckForm.submit();
+    }
+    function checkLength(obj) {
+        if($(obj).attr('id')=="input_Id"){
+            var id=$(obj).val();
+            var blank_pattern = /\s/g;
+                if (id < 4 ||$(obj).val().match(blank_pattern)) {
+                    $('#div_AlertId').css('display', 'inline');
+                } else
+                    $('#div_AlertId').css('display', 'none');
+        }
+        else if($(obj).attr('id')=="input_Password"){
+            if($(obj).val().length<4) {
+                $('#span_AlertPW').css('display','inline');
+            }
+            else
+                $('#span_AlertPW').css('display','none');
+        }
+    }
+</script>
+<form name="logOutForm" action="/logOut" method="get"></form>
+</html>

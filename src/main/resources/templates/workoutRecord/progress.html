@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>진행상황</title>
+    <style>
+        body {
+            overflow-y: hidden; overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+        #div_ProgressBox{
+            position: relative;left: 360px; top:30px;
+            border: 1px solid #0000ff;
+            height: 650px; width: 1100px;
+
+        }
+        #div_ProgressSit{
+            border-bottom: 1px solid #0000ff;
+            height: 50px;
+
+        }
+        #div_ProgressCheckBoxes{
+            position: relative;bottom:50px;left: 150px;
+            text-align: center;
+            height: 50px; width: 800px;
+        }
+        #div_ProgressName{
+            font-size: 30px; text-align: center;
+            height: 50px;
+            border-bottom: 1px solid #0000ff;
+            background-color: rgba(0, 0, 255, 0.4);
+        }
+        .div_ProgressVol{
+            overflow-y: auto; overflow-x: hidden;
+            height: 550px; width: 1100px;
+            text-align: center;
+        }
+        .div_ProgressCheckBox{
+            display: inline-block;
+            border: 2px solid grey;
+            border-radius: 50%;
+            position:relative;top: 10px;
+            height: 30px; width: 30px;
+        }
+        .div_ProgressDirBtn{
+            width: 150px;height: 50px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 25px;
+        }
+        .div_VolInfo{
+            border-bottom: 1px solid #0000ff;
+            width: 1100px; height: 49px;
+            background-color: rgba(232, 225, 225, 0.3);
+        }
+        .div_VolInfo .input_Amount{
+            position: relative; bottom: 45px; left: 30px;
+            height: 30px; width: 60px;
+            font-size: 30px;
+        }
+        .div_VolInfo .input_Weight{
+            position: relative; bottom: 45px; right: 40px;
+            height: 30px; width: 60px;
+            font-size: 30px;
+        }
+        .div_VolInfo .div_Set{
+            border-right: 1px solid;width: 150px;height: 50px;
+            font-size: 30px; text-align: center
+        }
+        .div_VolInfo .div_Remove{
+            position: relative; bottom: 90px; left: 950px;
+            width: 150px;height: 50px;
+            font-size: 30px; text-align: center;
+            border-left: 1px solid;
+            cursor: pointer;
+        }
+        .div_VolInfo .input_CompleteCheckBox{
+            position: relative; bottom: 40px; right: 150px;
+            height: 30px; width: 30px;
+            cursor: pointer;
+        }
+        #div_addSet{
+            border: 1px solid; width: 200px; height: 70px;
+            position: relative; left: 1260px;top: 40px; text-align: center; font-size: 30px;
+            cursor: pointer;
+        }
+        input[class="input_ProgressCheckBox"] + label {
+
+        }
+        input[class="input_ProgressCheckBox"]:checked + label {
+            border: 2px solid blue;
+        }
+    </style>
+</head>
+<script>
+    var currentPage=0;
+    var isFirstShow=true;
+    var arrEvent=[],arrType=[],arrImgURL=[];
+</script>
+<span th:include="topBar.html" />
+<body>
+<div id="div_ProgressBox" >
+    <div id="div_ProgressSit">
+        <div class="div_ProgressDirBtn" style=" border-right: 1px solid #0000ff;" onclick="clickDirBtn(this)">
+            <span style=" position:relative;top: 10px;"><<</span>
+        </div>
+        <div id="div_ProgressCheckBoxes">
+
+        </div>
+        <div class="div_ProgressDirBtn"  style="border-left: 1px solid #0000ff; position: relative;
+        bottom: 100px; left:950px" onclick="clickDirBtn(this)">
+            <span style=" position:relative;top: 10px;">>></span>
+        </div>
+    </div>
+<div id="div_ProgressName">
+
+</div>
+
+  <div id="div_AllProgressVol">
+
+  </div>
+</div>
+<div id="div_addSet" onmouseenter="mouseEnterBtn(this)" onmouseleave="mouseLeaveBtn(this)" onclick="clickAddSet()">
+    <span style="position: relative; top: 10px">세트 추가</span>
+</div>
+<div onclick="clickModifyProgress()"  onmouseenter="mouseEnterBtn(this)" onmouseleave="mouseLeaveBtn(this)"
+     style="cursor: pointer; border: 1px solid; width: 200px; height: 70px; text-align: center;
+     position: relative; left: 1000px;bottom: 30px; text-align: center; font-size: 30px">
+    <span style="position: relative; top: 10px">종목 수정</span>
+</div>
+<table border="1" onmouseleave="mouseLeaveBtn(this)" onmouseenter="mouseEnterBtn(this)" onclick="clickSchedule()"
+       style="width:400px; background-color:white; position: relative;left: 1480px; bottom:750px">
+    <tr>
+        <td colspan="7" style="height: 25px;text-align: center" >
+            <span>클릭시 스케줄표로 이동합니다</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="7" style="height: 25px;text-align: center" >
+            <span>Today:</span>
+            <span th:text="${calVO.getYear()}+년">2020년</span>
+            <span th:text="${calVO.getMonth()+1}+월">6월</span>
+        </td>
+    </tr>
+    <th class="th_Cal" style="color: red; width: 10px">일</th>
+    <th class="th_Cal" style="width: 10px">월</th>
+    <th class="th_Cal" style="width: 10px">화</th>
+    <th class="th_Cal" style="width: 10px">수</th>
+    <th class="th_Cal" style="width: 10px">목</th>
+    <th class="th_Cal" style="width: 10px">금</th>
+    <th class="th_Cal" style="width: 10px">토</th>
+    <tbody id="calBody" >
+    <tr th:each="list, i: ${cal_list}" >
+        <td class="td_Cal" style="height: 60px;width:55px">
+            <span class="td_calDate" style="color: red" th:text="${list.getSunday()}"></span>
+        </td>
+        <td class="td_Cal" style="height: 60px;width:55px">
+            <span class="td_calDate" th:text="${list.getMonday()}"></span>
+        </td>
+        <td class="td_Cal" style="height: 60px;width:55px">
+            <span class="td_calDate" th:text="${list.getTuesday()}"></span>
+        </td>
+        <td class="td_Cal" style="height: 60px;width:55px">
+            <span class="td_calDate" th:text="${list.getWednesday()}"></span>
+        </td>
+        <td class="td_Cal" style="height: 60px;width:55px">
+            <span class="td_calDate" th:text="${list.getThursday()}">1</span>
+        </td>
+        <td class="td_Cal"style="height: 60px;width:55px" >
+            <span class="td_calDate" th:text="${list.getFriday()}"></span>
+        </td>
+        <td class="td_Cal" style="height: 60px;width:55px">
+            <span class="td_calDate" th:text="${list.getSaturday()}"></span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div>
+</div>
+</body>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    var jsonData=[[${jsonData}]];
+    var arr=JSON.parse(jsonData);
+    for(var i=0; i<arr.length;i++){
+        var name=arr[i].name;
+        var event=arr[i].event;
+        var imgURL=arr[i].imgURL;
+        var type=arr[i].type;
+        var isComplete;
+        var boolLength=0;
+
+        $('#div_ProgressName').add("<span style='display: none'>"+name+"</span>").
+        appendTo($('#div_ProgressName'));
+        $('#div_AllProgressVol').add("<div class='div_ProgressVol' style='display: none'></div>").
+        appendTo($('#div_AllProgressVol'));
+        $('#div_ProgressCheckBoxes').add("<div class='div_ProgressCheckBox'>" +
+            "<span style='font-size: 30px; position: relative; bottom: 5px; display: none'>✔</span>" +
+            "</div>").appendTo($('#div_ProgressCheckBoxes'));
+
+        if(arr[i].amount[0]) {
+            for (var j = 0; j < arr[i].bool.length; j++) {
+                var index = $('#div_AllProgressVol').children(":eq(" + i + ")").children().length + 1;
+                $('#div_AllProgressVol').children(":eq(" + i + ")").add("<div class='div_VolInfo'>" +
+                    "<div class='div_Set'> <span style='position: relative; top: 5px'>" + index + '세트' + "</span></div>" +
+                    "<input type='checkbox' class='input_CompleteCheckBox' onclick='clickSetComplete()'>" +
+                    "<span class='input_Weight'>무게: </span>" +
+                    "<input type='text'  class='input_Weight' value=" + arr[i].weight[j] + ">" +
+                    "<span class='input_Weight'> kg</span>" +
+                    "<span class='input_Amount'>횟수: </span>" +
+                    "<input type='text' class='input_Amount' value=" + arr[i].amount[j] + ">" +
+                    "<span class='input_Amount'> 회</span>" +
+                    "<div class='div_Remove' onclick='clickRemoveInVolBox(this)'><span>삭제</span>" +
+                    "</div>")
+                    .appendTo($('#div_AllProgressVol').children(":eq(" + i + ")"));
+
+                if(arr[i].type=="amount") {
+                    $('#div_AllProgressVol').children(":eq(" + i + ")").children(":eq(" + j + ")")
+                        .children('.input_Weight').css('display', 'none');
+                    $('#div_AllProgressVol').children(":eq(" + i + ")").children(":eq(" + j + ")")
+                        .children('.input_CompleteCheckBox').css("right", 245);
+                }
+
+                if(arr[i].bool[j]==1) {
+                    $('#div_AllProgressVol').children(":eq(" + i + ")").children(":eq(" + j + ")").
+                    children('.input_CompleteCheckBox').prop("checked", true);
+                }
+                else
+                    $('#div_AllProgressVol').children(":eq(" + i + ")").
+                    children(":eq(" + j + ")").children('.input_CompleteCheckBox').prop("checked", false);
+            }
+        }
+        for(var j=0; j< $('#div_AllProgressVol').children(":eq(" + i + ")").children().length;j++) {
+            if(arr[i].bool[j]==1)
+                boolLength+=1;
+            else{
+                boolLength=0;
+                break;
+            }
+        }
+        if(boolLength==$('#div_AllProgressVol').children(":eq(" + i + ")").children().length &&
+            $('#div_AllProgressVol').children(":eq(" + i + ")").children().length!=0) {
+            isComplete = true;
+            $('#div_ProgressCheckBoxes').children(":eq("+i+")").children('span').css('display','inline');
+        }
+        else {
+            isComplete = false;
+        }
+        if(i==arr.length-1 && isComplete==1){
+            isComplete = false;
+        }
+        if(isComplete==0 && isFirstShow==1){
+            $('#div_ProgressName').children(":eq("+i+")").css("display","inline");
+            $('#div_AllProgressVol').children(":eq("+i+")").css("display","block");
+            $('#div_ProgressCheckBoxes').children(":eq("+i+")").css('border-color','blue');
+            isFirstShow=false;
+            currentPage=i;
+        }
+    }
+
+    var curDate=[[${date}]];
+    for(var j=0;j<$('#calBody').children().children().length;j++){
+        if($('#calBody').children().children(":eq("+j+")").children('.td_calDate').text()==curDate){
+            $('#calBody').children().children(":eq("+j+")").children('.td_calDate')
+                .css('backgroundColor','blue');
+            $('#calBody').children().children(":eq("+j+")").add("<span style='font-size: 10px'>오늘</span>")
+                .appendTo($('#calBody').children().children(":eq("+j+")"));
+            $('#calBody').children().children(":eq("+j+")").children('.td_calDate')
+                .css('color','white');
+        }
+    }
+    function clickSchedule() {
+        var arrJson = [];
+        var length = $('#div_ProgressCheckBoxes').children().length;
+        var prevJsonData = [[${jsonData}]];
+        var prevArr = JSON.parse(prevJsonData);
+        var year=[[${calVO.getYear()}]];
+        var month=[[${calVO.getMonth()}]];
+        var date=[[${date}]];
+
+        for (var i = 0; i < length; i++) {
+            var arrBool=[],arrWeight=[],arrAmount=[];
+            var name=prevArr[i].name;
+            var event=prevArr[i].event;
+            var imgURL=prevArr[i].imgURL;
+            var type=prevArr[i].type;
+
+            for (var j = 0; j < $('#div_AllProgressVol').children(":eq(" + i + ")").children().length; j++) {
+                var arr = $('#div_AllProgressVol').children(":eq(" + i + ")").children(":eq(" + j + ")").children(":eq(" + 1 + ")").is(":checked");
+                arrBool.push(arr);
+                arr = $('#div_AllProgressVol').children(":eq(" + i + ")").children(":eq(" + j + ")").children(":eq(" + 3 + ")").val();
+                arrWeight.push(arr);
+                arr = $('#div_AllProgressVol').children(":eq(" + i + ")").children(":eq(" + j + ")").children(":eq(" + 6 + ")").val();
+                arrAmount.push(arr);
+            }
+
+            var arr = {"name":name,"event":event,"imgURL":imgURL,"type":type
+                ,"bool": arrBool, "weight": arrWeight, "amount": arrAmount,"date":date};
+            arrJson.push(arr)
+        }
+        var jsonData = JSON.stringify(arrJson);
+        jQuery.ajaxSettings.traditional = true;
+        $('#yearForSave').val(year);
+        $('#monthForSave').val(month);
+        $('#dateForSave').val(date);
+        $('#jsonDataForSave').val(jsonData);
+        document.scheduleForm.submit();
+    }
+    function clickModifyProgress() {
+        var arrJson = [];
+        var length = $('#div_ProgressCheckBoxes').children().length;
+        var prevJsonData = [[${jsonData}]];
+        var prevArr = JSON.parse(prevJsonData);
+        var year=[[${calVO.getYear()}]];
+        var month=[[${calVO.getMonth()}]];
+        var date=[[${date}]];
+
+        for (var i = 0; i < length; i++) {
+            var arrBool=[],arrWeight=[],arrAmount=[];
+            var name=prevArr[i].name;
+            var event=prevArr[i].event;
+            var imgURL=prevArr[i].imgURL;
+            var type=prevArr[i].type;
+
+            for (var j = 0; j < $('#div_AllProgressVol').children(":eq(" + i + ")").children().length; j++) {
+                var arr =$('#div_AllProgressVol').children(":eq(" + i + ")").children(":eq(" + j + ")").children(":eq(" + 1 + ")").is(":checked");
+                arrBool.push(arr);
+                arr = $('#div_AllProgressVol').children(":eq(" + i + ")").children(":eq(" + j + ")").children(":eq(" + 3 + ")").val();
+                arrWeight.push(arr);
+                arr = $('#div_AllProgressVol').children(":eq(" + i + ")").children(":eq(" + j + ")").children(":eq(" + 6 + ")").val();
+                arrAmount.push(arr);
+            }
+
+            var arr = {"name":name,"event":event,"imgURL":imgURL,"type":type
+                ,"bool": arrBool, "weight": arrWeight, "amount": arrAmount};
+            arrJson.push(arr)
+        }
+        var jsonData = JSON.stringify(arrJson);
+        jQuery.ajaxSettings.traditional = true;
+        $('#yearForList').val(year);
+        $('#monthForList').val(month);
+        $('#dateForList').val(date);
+        $('#jsonDataForList').val(jsonData);
+        document.progressForm.submit();
+    }
+
+    function clickSetComplete() {
+        var length=$('#div_AllProgressVol').children(":eq("+currentPage+")").children().length;
+        var checkBoxLength=0;
+        for (var i = 0; i < length; i++) {
+            if($('#div_AllProgressVol').children(":eq("+currentPage+")").
+            children(":eq("+i+")").children('.input_CompleteCheckBox').is(":checked")==1)
+                checkBoxLength+=1;
+        }
+        if(checkBoxLength==length && checkBoxLength!=0)
+            $('#div_ProgressCheckBoxes').children(":eq("+currentPage+")").children('span').css('display','inline');
+        else
+            $('#div_ProgressCheckBoxes').children(":eq("+currentPage+")").children('span').css('display','none');
+    }
+    function clickRemoveInVolBox(obj) {
+        console.log(currentPage);
+        var index=$(obj).parent().index();
+        var length=$(obj).parent().parent().children().length;
+        $('#div_AllProgressVol').children(":eq("+currentPage+")").children(":eq("+index+")").remove();
+        for(var i=index; i<length;i++){
+            $('#div_AllProgressVol').children(":eq("+currentPage+")").
+            children(":eq("+i+")").children('.div_Set').text(i+1+"세트");
+        }
+        clickSetComplete();
+    }
+    function clickAddSet() {
+        var jsonData=[[${jsonData}]];
+        var arr=JSON.parse(jsonData);
+        var number=$('#div_AllProgressVol').children(":eq("+currentPage+")").children().length+1;
+
+        $('#div_AllProgressVol').children(":eq("+currentPage+")").add("<div class='div_VolInfo'>" +
+        "<div class='div_Set'><span style='position: relative; top: 5px'>"+number+'세트'+"</span></div>"+
+        "<input type='checkbox' class='input_CompleteCheckBox' onclick='clickSetComplete()'>"+
+        "<span class='input_Weight'>무게: </span>"+
+        "<input type='text'  class='input_Weight'><span class='input_Weight'> kg</span>"+
+        "<span class='input_Amount'>횟수: </span>"+
+         "<input type='text' class='input_Amount'><span class='input_Amount'> 회</span>"+
+            "<div class='div_Remove' onclick='clickRemoveInVolBox(this)'><span>삭제</span></div>")
+            .appendTo($('#div_AllProgressVol').children(":eq("+currentPage+")"));
+        if(arr[currentPage].type=="amount"){
+            var div_Index= $('#div_AllProgressVol').children(":eq("+currentPage+")").children().length-1;
+
+            $('#div_AllProgressVol').children(":eq("+currentPage+")").children(":eq("+div_Index+")")
+            .children('.input_Weight').css('display','none');
+            $('#div_AllProgressVol').children(":eq("+currentPage+")").children(":eq("+div_Index+")")
+                .children('.input_CompleteCheckBox').css("right",245);
+        }
+        clickSetComplete();
+    }
+    function clickDirBtn(obj) {
+        var dir=$(obj).children('span').text();
+        var length= $('#div_ProgressName').children().length-1;
+
+        if(dir=='<<'){
+            if(currentPage<=0){
+                alert("페이지를 넘길수 없습니다")
+                return;
+            }
+            $('#div_ProgressName').children(":eq("+currentPage+")").css('display','none');
+            $('#div_AllProgressVol').children(":eq("+currentPage+")").css('display','none');
+            $('#div_ProgressCheckBoxes').children(":eq("+currentPage+")").css('border-color','grey');
+           currentPage-=1;
+            $('#div_ProgressName').children(":eq("+currentPage+")").css('display','inline');
+            $('#div_AllProgressVol').children(":eq("+currentPage+")").css('display','inline');
+            $('#div_ProgressCheckBoxes').children(":eq("+currentPage+")").css('border-color','blue');
+        }
+        else if(dir=='>>'){
+            if(currentPage>=length){
+                alert("페이지를 넘길수 없습니다")
+                return;
+            }
+            $('#div_ProgressName').children(":eq("+currentPage+")").css('display','none');
+            $('#div_AllProgressVol').children(":eq("+currentPage+")").css('display','none');
+            $('#div_ProgressCheckBoxes').children(":eq("+currentPage+")").css('border-color','grey');
+            currentPage+=1;
+            $('#div_ProgressName').children(":eq("+currentPage+")").css('display','inline');
+            $('#div_AllProgressVol').children(":eq("+currentPage+")").css('display','inline');
+            $('#div_ProgressCheckBoxes').children(":eq("+currentPage+")").css('border-color','blue');
+        }
+    }
+</script>
+<script>
+    function mouseEnterBtn(obj) {
+        $(obj).css('background','#6b89f6');
+    }
+    function mouseLeaveBtn(obj) {
+        $(obj).css('background','white');
+    }
+</script>
+<form name="scheduleForm" action="/workoutRecord/saveProgress" method="get">
+    <input type="hidden" name="jsonData" id="jsonDataForSave">
+    <input  type="hidden" name="year" id="yearForSave">
+    <input  type="hidden" name="month" id="monthForSave">
+    <input  type="hidden" name="date" id="dateForSave">
+</form>
+<form name="progressForm" action="/workoutRecord/myWorkout" method="post">
+    <input type="hidden" name="jsonData" id="jsonDataForList">
+    <input  type="hidden" name="year" id="yearForList">
+    <input  type="hidden" name="month" id="monthForList">
+    <input  type="hidden" name="date" id="dateForList">
+</form>
+</html>

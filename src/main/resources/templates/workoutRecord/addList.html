@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            overflow-y: hidden; overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+        .div_List{
+            border-bottom: 1px solid;
+            height: 79px;
+            background-color: #c8c8f8;
+            border-color: #273afd;
+            margin: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* 라인수 */
+            -webkit-box-orient: vertical;
+            word-wrap:break-word;
+            line-height: 1.2em;
+        }
+        #div_ListBox{
+            border-left: 1px solid;
+            height: 720px; width: 300px;
+            border-color: #273afd;
+        }
+        #span_Type{
+            position: relative; bottom: 80px; left: 85px
+        }
+        #div_Name{
+            position: relative;bottom: 80px; left: 80px;
+            font-size: 20px;width:150px;height: 30px
+        }
+        #span_Event{
+            position: relative;  bottom: 80px; left: 80px
+        }
+        #img_Thumbnail{
+            display:block; height: 79px; width: 79px
+        }
+        .div_CompleteBtn{
+            height: 80px;width: 300px;
+            border: 1px solid; border-top: 0px; border-right: 0px;
+            text-align: center;
+            cursor: pointer;
+            border-color: #273afd;
+        }
+        #div_RemoveBox{
+            height: 40px; width: 40px;border:1px solid; font-size:15px;
+            border-radius:50%; text-align: center; position: relative; bottom: 110px; left:230px;
+            cursor: pointer;
+            background-color: white;
+        }
+        ::-webkit-scrollbar{
+            height: 10px;
+            width: 5px;
+        }
+       ::-webkit-scrollbar-thumb {
+            background-color: #273afd;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: #6a6afd;
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 5px white;
+        }
+    </style>
+</head>
+<body>
+<div class="div_CompleteBtn" onmouseenter="mouseEnterListBox(this)"
+     onmouseleave="mouseLeaveListBox(this)" onclick="clickCompleteBox()">
+    <span style="position: relative; top: 20px; font-size: 25px;font-weight:800">추가 완료</span>
+</div>
+<div id="div_ListBox" style="overflow-y: auto" >
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    var jsonData=[[${jsonData}]];
+    if(jsonData){
+        var parseJsonData=JSON.parse(jsonData);
+        for(var i=0; i<parseJsonData.length ; i++){
+            var name=parseJsonData[i].name;
+            var event=parseJsonData[i].event;
+            var imgURL=parseJsonData[i].imgURL;
+            var type=parseJsonData[i].type;
+
+            $('#div_ListBox').add("<div class='div_List'>" +
+                " <img id='img_Thumbnail' src="+imgURL+">" +
+                "<span style='position: relative; bottom: 80px; left: 80px'>부위:</span>"+
+                "<span id='span_Event'>"+event+"</span>"+
+                "<span style='position: relative; bottom: 80px; left: 85px'>타입:</span>"+
+                "<span id='span_Type'>"+type+"</span>"+
+                "<div id='div_Name'>"+name+"</div>"+
+                "<div id='div_RemoveBox' onmouseleave='mouseLeaveListBox(this)' " +
+                "onmouseenter='mouseEnterListBox(this)' onclick='clickRemoveBox(this)'" +
+                "><span style=\"position: relative; top: 10px\">ㅡ</span></div>"+
+                "</div>").appendTo($('#div_ListBox'))
+            var amount=parseJsonData[i].amount;
+            var weight=parseJsonData[i].weight;
+            var bool=parseJsonData[i].bool;
+            for(var j=0; j<bool.length; j++)
+            {
+                $('#div_ListBox').children(":eq("+i+")").add(
+                    "<input id='input_Amount' type='hidden' value="+amount[j]+">"+
+                    "<input id='input_Bool' type='hidden' value="+bool[j]+">"+
+                    "<input id='input_Weight' type='hidden' value="+weight[j]+">"
+                ).appendTo($('#div_ListBox').children(":eq("+i+")"));
+            }
+        }
+    }
+    function mouseEnterListBox(obj) {
+        $(obj).css('backgroundColor','#6b89f6');
+    }
+    function mouseLeaveListBox(obj) {
+        $(obj).css('backgroundColor','white');
+    }
+    function clickRemoveBox(obj) {
+        var index=$(obj).parent().index();
+        $('.div_List').eq(index).remove();
+    }
+    function clickCompleteBox() {
+        var year=[[${calVO.getYear()}]];
+        var month=[[${calVO.getMonth()}]];
+        var date=[[${date}]];
+
+        var arrList;
+        var arrJson=[];
+        $('.div_List').each(function (index,item) {
+           var name= $(item).children('#div_Name').text();
+           var type= $(item).children('#span_Type').text();
+           var imgURL=$(item).children('img').attr('src');
+           var event=$(item).children('#span_Event').text();
+
+           var arrAmount=$(item).children('#input_Amount');
+           var arrWeight=$(item).children('#input_Weight');
+           var arrBool=$(item).children('#input_Bool');
+            var bool=[], weight=[],amount=[];
+            var transbool="";
+            for(var j=0; j<arrBool.length; j++){
+                amount.push($(arrAmount).eq(j).val());
+                weight.push($(arrWeight).eq(j).val());
+                if(($(arrBool).eq(j).val())=='true')
+                    transbool = true;
+                else
+                    transbool=false;
+                bool.push(transbool);
+            }
+           arrList={"name":name,"event":event,"imgURL":imgURL,"type":type,"amount":amount,
+           "weight":weight,"bool":bool};
+            arrJson.push(arrList);
+        })
+        var jsonData = JSON.stringify(arrJson);
+        jQuery.ajaxSettings.traditional = true;
+        $('input[name=jsonData]').val(jsonData);
+        $('#yearForProgress').val(year);
+        $('#monthForProgress').val(month);
+        $('#dateForProgress').val(date);
+        document.progressForm.submit();
+    }
+</script>
+<form name="progressForm" action="/workoutRecord/workoutProgress" method="post">
+    <input type="hidden" name="jsonData">
+    <input  type="hidden" name="year" id="yearForProgress">
+    <input  type="hidden" name="month" id="monthForProgress">
+    <input  type="hidden" name="date" id="dateForProgress">
+</form>
+</body>
+</html>

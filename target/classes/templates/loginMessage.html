@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body {
+            overflow-y: hidden; overflow-x: hidden;
+            height: 100%; width: 100%;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>로그인 메세지!</title>
+</head>
+<script th:inline="javascript">
+    var msg=[[${msg}]];
+    var URL=[[${URL}]];
+    alert(msg)
+    document.location.href=URL;
+</script>
+<body>
+
+</body>
+</html>
